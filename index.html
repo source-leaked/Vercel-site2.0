@@ -14,7 +14,12 @@ body{
   background:#02040a;
   color:#fff;
   overflow-x:hidden;
-  cursor:none;
+  cursor:none; /* Standard-Cursor deaktiviert */
+}
+
+/* DEAKTIVIERE CURSOR ÜBERALL */
+body, a, button, input, textarea{
+  cursor: none !important;
 }
 
 /* GRID BACKGROUND */
@@ -138,6 +143,7 @@ nav a{
   text-decoration:none;
   color:white;
   display:block;
+  user-select:none;
 }
 
 /* TOAST */
@@ -153,28 +159,64 @@ nav a{
 }
 .toast.show{opacity:1}
 
-/* CURSOR */
+/* === NEW CURSOR === */
 .cursor{
   position:fixed;
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:#38bdf8;
+  top:0;
+  left:0;
   pointer-events:none;
   z-index:9999;
-  box-shadow:0 0 15px #38bdf8, 0 0 30px #38bdf8;
   transform:translate(-50%, -50%);
 }
-.trail{
-  position:fixed;
-  width:8px;
-  height:8px;
+
+.dot{
+  width:6px;
+  height:6px;
+  background:white;
   border-radius:50%;
-  background:#a855f7;
-  pointer-events:none;
-  z-index:9998;
-  opacity:0.7;
+  position:absolute;
+  top:50%;
+  left:50%;
   transform:translate(-50%, -50%);
+}
+
+.ring{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red);
+  -webkit-mask: radial-gradient(circle, transparent 60%, black 61%);
+  mask: radial-gradient(circle, transparent 60%, black 61%);
+  animation: spin 3s linear infinite;
+  transition:0.2s ease;
+}
+
+@keyframes spin{
+  from{transform:translate(-50%, -50%) rotate(0deg);}
+  to{transform:translate(-50%, -50%) rotate(360deg);}
+}
+
+/* HOVER EFFECT */
+.cursor.hover .ring{
+  width:40px;
+  height:40px;
+}
+.cursor.hover .dot{
+  transform:translate(-50%, -50%) scale(1.8);
+}
+
+/* CLICK PULSE */
+.cursor.click .ring{
+  animation: spin 3s linear infinite, pulse 0.3s ease;
+}
+@keyframes pulse{
+  0%{transform:translate(-50%, -50%) scale(1);}
+  50%{transform:translate(-50%, -50%) scale(1.4);}
+  100%{transform:translate(-50%, -50%) scale(1);}
 }
 
 /* HOWTO */
@@ -199,7 +241,11 @@ nav a{
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+<!-- NEW CURSOR -->
+<div class="cursor">
+  <div class="dot"></div>
+  <div class="ring"></div>
+</div>
 
 <nav>
   <div>NEXOR</div>
@@ -328,8 +374,13 @@ const scripts = {
 function copyText(key, btn){
   navigator.clipboard.writeText(scripts[key]);
   btn.innerText="Copied!";
-  setTimeout(()=>btn.innerText="Copy Script",1500);
 
+  // Click pulse effect
+  const cursorEl = document.querySelector('.cursor');
+  cursorEl.classList.add('click');
+  setTimeout(()=>cursorEl.classList.remove('click'),300);
+
+  setTimeout(()=>btn.innerText="Copy Script",1500);
   let t=document.getElementById("toast");
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2000);
@@ -344,25 +395,20 @@ function search(){
   });
 }
 
-/* CURSOR */
-const cursor = document.getElementById("cursor");
-document.addEventListener("mousemove", e => {
-  cursor.style.left = e.clientX + "px";
-  cursor.style.top = e.clientY + "px";
+/* NEW CURSOR JS */
+const cursor = document.querySelector(".cursor");
 
-  let trail = document.createElement("div");
-  trail.className = "trail";
-  trail.style.left = e.clientX + "px";
-  trail.style.top = e.clientY + "px";
-  document.body.appendChild(trail);
-  setTimeout(()=>trail.remove(),300);
+document.addEventListener("mousemove", e=>{
+  cursor.style.left = e.clientX+"px";
+  cursor.style.top = e.clientY+"px";
 });
+
 document.querySelectorAll("a, .copy").forEach(el=>{
   el.addEventListener("mouseenter", ()=>{
-    cursor.style.transform="translate(-50%, -50%) scale(1.8)";
+    cursor.classList.add("hover");
   });
   el.addEventListener("mouseleave", ()=>{
-    cursor.style.transform="translate(-50%, -50%) scale(1)";
+    cursor.classList.remove("hover");
   });
 });
 
