@@ -9,10 +9,12 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+html{scroll-behavior:smooth;}
 body{
   background:#02040a;
   color:#fff;
   overflow-x:hidden;
+  cursor:none;
 }
 
 /* GRID BACKGROUND */
@@ -43,7 +45,6 @@ nav{
   background:rgba(0,0,0,0.5);
   backdrop-filter:blur(12px);
 }
-
 nav a{
   color:white;
   text-decoration:none;
@@ -55,12 +56,16 @@ nav a{
   text-align:center;
   padding:120px 20px;
 }
-
 .hero h1{
-  font-size:5rem;
+  font-size:clamp(3rem,8vw,5rem);
   background:linear-gradient(90deg,#a855f7,#38bdf8);
   -webkit-background-clip:text;
   color:transparent;
+}
+.hero h2{
+  margin-top:10px;
+  font-weight:400;
+  opacity:0.8;
 }
 
 /* BUTTONS */
@@ -71,13 +76,25 @@ nav a{
   text-decoration:none;
   display:inline-block;
 }
-
 .primary{
   background:linear-gradient(90deg,#7c3aed,#38bdf8);
 }
 
+/* STATS */
+.stats{
+  margin-top:25px;
+  opacity:0.8;
+}
+.stats span{
+  margin:10px;
+  display:inline-block;
+}
+
 /* SECTION */
-.section{padding:80px 50px}
+.section{
+  padding:80px 50px;
+  scroll-margin-top:80px;
+}
 
 /* SEARCH */
 .search{
@@ -111,7 +128,6 @@ nav a{
   transform:translateY(-6px);
   box-shadow:0 0 25px rgba(56,189,248,0.4);
 }
-
 .copy{
   margin-top:15px;
   padding:12px;
@@ -136,49 +152,133 @@ nav a{
   transition:.3s;
 }
 .toast.show{opacity:1}
+
+/* CURSOR */
+.cursor{
+  position:fixed;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#38bdf8;
+  pointer-events:none;
+  z-index:9999;
+  box-shadow:0 0 15px #38bdf8, 0 0 30px #38bdf8;
+  transform:translate(-50%, -50%);
+}
+.trail{
+  position:fixed;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#a855f7;
+  pointer-events:none;
+  z-index:9998;
+  opacity:0.7;
+  transform:translate(-50%, -50%);
+}
+
+/* HOWTO */
+.section h2.title{
+  text-align:center;
+  font-size:2rem;
+  margin-bottom:40px;
+}
+.howto .card{
+  text-align:center;
+}
+.reveal{
+  opacity:0;
+  transform:translateY(40px);
+  transition:0.6s ease;
+}
+.reveal.active{
+  opacity:1;
+  transform:translateY(0);
+}
 </style>
 </head>
-
 <body>
+
+<div class="cursor" id="cursor"></div>
 
 <nav>
   <div>NEXOR</div>
   <div>
-    <a href="#">Scripts</a>
+    <a href="#scripts">Scripts</a>
     <a href="#executors">Executors</a>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
-  <h1>NEXOR SCRIPTS</h1>
-  <a href="#" class="btn primary">Browse Scripts</a>
-  <a href="https://discord.gg/z7fFuubfEt" class="btn primary">Join Discord</a>
+  <h1>NEXOR</h1>
+  <h2>Scripts</h2>
+
+  <div style="margin-top:30px;">
+    <a href="#scripts" class="btn primary">Browse Scripts</a>
+    <a href="#executors" class="btn primary">Browse Executors</a>
+    <a href="https://discord.gg/z7fFuubfEt" target="_blank" class="btn primary">Join Discord</a>
+  </div>
+
+  <div class="stats">
+    <span>🔥 180K+ Views</span>
+    <span>📜 4+ Scripts</span>
+    <span>⚙️ 4 Executors</span>
+    <span>✅ 100% Working</span>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section class="section">
+  <h2 class="title">How To Use</h2>
+  <div class="grid howto">
+
+    <div class="card reveal">
+      <h3>🚀 01 Get A Executor</h3>
+      <p>Download a executor from the list below. Delta, Xeno or Solara recommended</p>
+    </div>
+
+    <div class="card reveal">
+      <h3>🎮 02 Open Roblox</h3>
+      <p>Launch the game you want to use the script in and wait until it fully loads.</p>
+    </div>
+
+    <div class="card reveal">
+      <h3>📋 03 Copy Script</h3>
+      <p>Click the copy script button on any script card. It copies automatically to your clipboard.</p>
+    </div>
+
+    <div class="card reveal">
+      <h3>⚡ 04 Execute</h3>
+      <p>Open your executor, paste the script and hit Execute. Enjoy!</p>
+    </div>
+
+  </div>
 </section>
 
 <!-- SCRIPTS -->
-<section class="section">
+<section class="section" id="scripts">
   <h2>Latest Scripts</h2>
-
   <input class="search" placeholder="Search scripts..." onkeyup="search()">
 
-  <div class="grid" id="scripts">
+  <div class="grid" id="scriptsGrid">
 
     <div class="card">
       <h3>Steal A Brainrot</h3>
       <p>Auto farm + OP features</p>
-      <div class="copy" onclick="copyText('brainrot')">Copy Script</div>
+      <div class="copy" onclick="copyText('brainrot', this)">Copy Script</div>
     </div>
 
     <div class="card">
       <h3>Sailor Piece</h3>
       <p>Auto farm + teleport</p>
-      <div class="copy" onclick="copyText('sailor')">Copy Script</div>
+      <div class="copy" onclick="copyText('sailor', this)">Copy Script</div>
     </div>
 
     <div class="card">
       <h3>Escape Tsunami</h3>
       <p>Auto survive script</p>
-      <div class="copy" onclick="copyText('tsunami')">Copy Script</div>
+      <div class="copy" onclick="copyText('tsunami', this)">Copy Script</div>
     </div>
 
   </div>
@@ -187,7 +287,6 @@ nav a{
 <!-- EXECUTORS -->
 <section class="section" id="executors">
   <h2>Executors</h2>
-
   <div class="grid">
 
     <div class="card">
@@ -226,23 +325,60 @@ const scripts = {
   tsunami: "loadstring(game:HttpGet('https://cdn.sourceb.in/bins/urkpqtQc3I/0'))()"
 };
 
-function copyText(key){
+function copyText(key, btn){
   navigator.clipboard.writeText(scripts[key]);
+  btn.innerText="Copied!";
+  setTimeout(()=>btn.innerText="Copy Script",1500);
+
   let t=document.getElementById("toast");
-  t.innerText="Copied!";
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2000);
 }
 
 function search(){
   let input=document.querySelector(".search").value.toLowerCase();
-  let cards=document.querySelectorAll("#scripts .card");
-
+  let cards=document.querySelectorAll("#scriptsGrid .card");
   cards.forEach(card=>{
-    let text=card.innerText.toLowerCase();
-    card.style.display=text.includes(input)?"block":"none";
+    let title=card.querySelector("h3").innerText.toLowerCase();
+    card.style.display=title.includes(input)?"block":"none";
   });
 }
+
+/* CURSOR */
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+
+  let trail = document.createElement("div");
+  trail.className = "trail";
+  trail.style.left = e.clientX + "px";
+  trail.style.top = e.clientY + "px";
+  document.body.appendChild(trail);
+  setTimeout(()=>trail.remove(),300);
+});
+document.querySelectorAll("a, .copy").forEach(el=>{
+  el.addEventListener("mouseenter", ()=>{
+    cursor.style.transform="translate(-50%, -50%) scale(1.8)";
+  });
+  el.addEventListener("mouseleave", ()=>{
+    cursor.style.transform="translate(-50%, -50%) scale(1)";
+  });
+});
+
+/* HOWTO REVEAL */
+function reveal(){
+  let reveals = document.querySelectorAll(".reveal");
+  reveals.forEach(el=>{
+    let windowHeight = window.innerHeight;
+    let elementTop = el.getBoundingClientRect().top;
+    if(elementTop < windowHeight - 100){
+      el.classList.add("active");
+    }
+  });
+}
+window.addEventListener("scroll", reveal);
+reveal();
 </script>
 
 </body>
