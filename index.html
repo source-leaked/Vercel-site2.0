@@ -14,10 +14,9 @@ body{
   background:#02040a;
   color:#fff;
   overflow-x:hidden;
-  cursor:none; /* Standard-Cursor deaktiviert */
 }
 
-/* DEAKTIVIERE CURSOR ÜBERALL */
+/* REMOVE DEFAULT CURSOR */
 body, a, button, input, textarea{
   cursor: none !important;
 }
@@ -159,64 +158,54 @@ nav a{
 }
 .toast.show{opacity:1}
 
-/* === NEW CURSOR === */
-.cursor{
-  position:fixed;
-  top:0;
-  left:0;
-  pointer-events:none;
-  z-index:9999;
-  transform:translate(-50%, -50%);
+/* CUSTOM CURSOR */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
 }
 
-.dot{
-  width:6px;
-  height:6px;
-  background:white;
-  border-radius:50%;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
+.cursor .dot {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle at 30% 30%, #d8aaff, #7c3aed); /* radiant purple */
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.7), 0 0 16px rgba(216, 170, 255, 0.5);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ring{
-  width:24px;
-  height:24px;
-  border-radius:50%;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
+.cursor .ring {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red);
   -webkit-mask: radial-gradient(circle, transparent 60%, black 61%);
   mask: radial-gradient(circle, transparent 60%, black 61%);
+  transition: width 0.2s ease, height 0.2s ease;
   animation: spin 3s linear infinite;
-  transition:0.2s ease;
+  pointer-events: none;
 }
 
-@keyframes spin{
-  from{transform:translate(-50%, -50%) rotate(0deg);}
-  to{transform:translate(-50%, -50%) rotate(360deg);}
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* HOVER EFFECT */
-.cursor.hover .ring{
-  width:40px;
-  height:40px;
-}
-.cursor.hover .dot{
-  transform:translate(-50%, -50%) scale(1.8);
-}
-
-/* CLICK PULSE */
-.cursor.click .ring{
-  animation: spin 3s linear infinite, pulse 0.3s ease;
-}
-@keyframes pulse{
-  0%{transform:translate(-50%, -50%) scale(1);}
-  50%{transform:translate(-50%, -50%) scale(1.4);}
-  100%{transform:translate(-50%, -50%) scale(1);}
+/* HOVER EFFECT: dot grows to ring size */
+.cursor.hover .dot {
+  width: 24px;
+  height: 24px;
 }
 
 /* HOWTO */
@@ -241,7 +230,7 @@ nav a{
 </head>
 <body>
 
-<!-- NEW CURSOR -->
+<!-- CUSTOM CURSOR -->
 <div class="cursor">
   <div class="dot"></div>
   <div class="ring"></div>
@@ -362,30 +351,43 @@ nav a{
   </div>
 </section>
 
-<div class="toast" id="toast">Copied!</div>
+<div class="toast" id="toast">Script Copied!</div>
 
 <script>
+// Scripts object
 const scripts = {
-  brainrot: "loadstring(game:HttpGet("https://cdn.sourceb.in/bins/3LKJUcf9cy/0"))()",
-  sailor: "loadstring(game:HttpGet("https://cdn.sourceb.in/bins/TlgYgcSdDb/0"))()",
-  tsunami: "loadstring(game:HttpGet("https://cdn.sourceb.in/bins/Kl8IsjmxwX/0"))()"
+  brainrot: `loadstring(game:HttpGet("https://cdn.sourceb.in/bins/3LKJUcf9cy/0"))()`,
+  sailor: `loadstring(game:HttpGet("https://cdn.sourceb.in/bins/TlgYgcSdDb/0"))()`,
+  tsunami: `loadstring(game:HttpGet("https://cdn.sourceb.in/bins/Kl8IsjmxwX/0"))()`
 };
 
+// Copy function with toast
 function copyText(key, btn){
-  navigator.clipboard.writeText(scripts[key]);
-  btn.innerText="Copied!";
+  const text = scripts[key];
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text);
+  } else {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  }
 
-  // Click pulse effect
+  btn.innerText="Copied!";
   const cursorEl = document.querySelector('.cursor');
   cursorEl.classList.add('click');
   setTimeout(()=>cursorEl.classList.remove('click'),300);
-
   setTimeout(()=>btn.innerText="Copy Script",1500);
-  let t=document.getElementById("toast");
+
+  const t=document.getElementById("toast");
+  t.innerText = "Script Copied!";
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"),2000);
 }
 
+// Search
 function search(){
   let input=document.querySelector(".search").value.toLowerCase();
   let cards=document.querySelectorAll("#scriptsGrid .card");
@@ -395,24 +397,32 @@ function search(){
   });
 }
 
-/* NEW CURSOR JS */
+// Cursor
 const cursor = document.querySelector(".cursor");
+let mouseX = 0, mouseY = 0;
+let currentX = 0, currentY = 0;
+const speed = 0.2;
 
-document.addEventListener("mousemove", e=>{
-  cursor.style.left = e.clientX+"px";
-  cursor.style.top = e.clientY+"px";
+document.addEventListener("mousemove", e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
 });
 
-document.querySelectorAll("a, .copy").forEach(el=>{
-  el.addEventListener("mouseenter", ()=>{
-    cursor.classList.add("hover");
-  });
-  el.addEventListener("mouseleave", ()=>{
-    cursor.classList.remove("hover");
-  });
+function animate() {
+  currentX += (mouseX - currentX) * speed;
+  currentY += (mouseY - currentY) * speed;
+  cursor.style.left = currentX + "px";
+  cursor.style.top = currentY + "px";
+  requestAnimationFrame(animate);
+}
+animate();
+
+document.querySelectorAll("a, .copy, button").forEach(el => {
+  el.addEventListener("mouseenter", () => cursor.classList.add("hover"));
+  el.addEventListener("mouseleave", () => cursor.classList.remove("hover"));
 });
 
-/* HOWTO REVEAL */
+// Reveal howto
 function reveal(){
   let reveals = document.querySelectorAll(".reveal");
   reveals.forEach(el=>{
