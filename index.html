@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexor Scripts</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+body{
+  background:#02040a;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* GRID BACKGROUND */
+body::before{
+  content:"";
+  position:fixed;
+  width:200%;
+  height:200%;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:grid 25s linear infinite;
+  z-index:-2;
+}
+@keyframes grid{
+  from{transform:translate(0,0)}
+  to{transform:translate(-60px,-60px)}
+}
+
+/* NAV */
+nav{
+  position:sticky;
+  top:0;
+  display:flex;
+  justify-content:space-between;
+  padding:20px 50px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(12px);
+}
+
+nav a{
+  color:white;
+  text-decoration:none;
+  margin-left:20px;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:120px 20px;
+}
+
+.hero h1{
+  font-size:5rem;
+  background:linear-gradient(90deg,#a855f7,#38bdf8);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+/* BUTTONS */
+.btn{
+  padding:14px 30px;
+  margin:10px;
+  border-radius:12px;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.primary{
+  background:linear-gradient(90deg,#7c3aed,#38bdf8);
+}
+
+/* SECTION */
+.section{padding:80px 50px}
+
+/* SEARCH */
+.search{
+  width:100%;
+  max-width:500px;
+  margin:20px auto;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  background:#0d1117;
+  color:white;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:25px;
+}
+
+/* CARD */
+.card{
+  background:rgba(20,25,45,0.6);
+  border-radius:20px;
+  padding:20px;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.05);
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 25px rgba(56,189,248,0.4);
+}
+
+.copy{
+  margin-top:15px;
+  padding:12px;
+  text-align:center;
+  border-radius:10px;
+  background:linear-gradient(90deg,#7c3aed,#38bdf8);
+  cursor:pointer;
+  text-decoration:none;
+  color:white;
+  display:block;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  background:#111;
+  padding:15px 20px;
+  border-radius:10px;
+  opacity:0;
+  transition:.3s;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div>NEXOR</div>
+  <div>
+    <a href="#">Scripts</a>
+    <a href="#executors">Executors</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>NEXOR SCRIPTS</h1>
+  <a href="#" class="btn primary">Browse Scripts</a>
+  <a href="https://discord.gg/z7fFuubfEt" class="btn primary">Join Discord</a>
+</section>
+
+<!-- SCRIPTS -->
+<section class="section">
+  <h2>Latest Scripts</h2>
+
+  <input class="search" placeholder="Search scripts..." onkeyup="search()">
+
+  <div class="grid" id="scripts">
+
+    <div class="card">
+      <h3>Steal A Brainrot</h3>
+      <p>Auto farm + OP features</p>
+      <div class="copy" onclick="copyText('brainrot')">Copy Script</div>
+    </div>
+
+    <div class="card">
+      <h3>Sailor Piece</h3>
+      <p>Auto farm + teleport</p>
+      <div class="copy" onclick="copyText('sailor')">Copy Script</div>
+    </div>
+
+    <div class="card">
+      <h3>Escape Tsunami</h3>
+      <p>Auto survive script</p>
+      <div class="copy" onclick="copyText('tsunami')">Copy Script</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXECUTORS -->
+<section class="section" id="executors">
+  <h2>Executors</h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Delta Android</h3>
+      <p>Executor for Android devices</p>
+      <a href="https://www.mediafire.com/file/cvs7gxp420u1o0t/Delta-2.709.873.apk/file" target="_blank" class="copy">Download</a>
+    </div>
+
+    <div class="card">
+      <h3>Delta iOS</h3>
+      <p>Executor for iOS devices</p>
+      <a href="https://www.mediafire.com/file/ax7valbu4ebyn9a/Delta-2.707.734.ipa/file" target="_blank" class="copy">Download</a>
+    </div>
+
+    <div class="card">
+      <h3>Xeno PC</h3>
+      <p>Windows PC executor</p>
+      <a href="https://xeno.now/" target="_blank" class="copy">Download</a>
+    </div>
+
+    <div class="card">
+      <h3>Solara PC</h3>
+      <p>High-performance PC executor</p>
+      <a href="https://solara.gg/" target="_blank" class="copy">Download</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+const scripts = {
+  brainrot: "loadstring(game:HttpGet('https://cdn.sourceb.in/bins/ikmRWuZZrB/0'))()",
+  sailor: "loadstring(game:HttpGet('https://cdn.sourceb.in/bins/PWKZQWZYY9/0'))()",
+  tsunami: "loadstring(game:HttpGet('https://cdn.sourceb.in/bins/urkpqtQc3I/0'))()"
+};
+
+function copyText(key){
+  navigator.clipboard.writeText(scripts[key]);
+  let t=document.getElementById("toast");
+  t.innerText="Copied!";
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2000);
+}
+
+function search(){
+  let input=document.querySelector(".search").value.toLowerCase();
+  let cards=document.querySelectorAll("#scripts .card");
+
+  cards.forEach(card=>{
+    let text=card.innerText.toLowerCase();
+    card.style.display=text.includes(input)?"block":"none";
+  });
+}
+</script>
+
+</body>
+</html>
